@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador de Atención</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/sim.css">
+</head>
+<body>
+<header class="header">
+    <h1>Simulador de Atención al Cliente</h1>
+    <p>Demostración de estructuras de datos: Lista, Cola, Pila y Árbol Binario de Prioridad</p>
+</header>
+
+<main class="container">
+
+    <section class="card">
+        <h2>Agregar Cliente (Lista/Arreglo)</h2>
+        <form th:action="@{/clientes/agregar}" method="post" class="form-grid">
+            <label>ID
+                <input type="number" name="id" required min="1">
+            </label>
+            <label>Nombre
+                <input type="text" name="nombre" required>
+            </label>
+            <label>Teléfono
+                <input type="text" name="telefono" required>
+            </label>
+            <label>Prioridad (1 = alta)
+                <input type="number" name="prioridad" required min="1" max="100">
+            </label>
+            <button type="submit" class="btn">Agregar</button>
+        </form>
+    </section>
+
+    <section class="grid-2">
+        <div class="card">
+            <h2>Clientes (Lista)</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th><th>Nombre</th><th>Teléfono</th><th>Prioridad</th><th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(estado.clientes)}">
+                        <td colspan="5" class="muted">Sin clientes</td>
+                    </tr>
+                    <tr th:each="c : ${estado.clientes}">
+                        <td th:text="${c.id}">1</td>
+                        <td th:text="${c.nombre}">Nombre</td>
+                        <td th:text="${c.telefono}">555-0000</td>
+                        <td th:text="${c.prioridad}">1</td>
+                        <td>
+                            <form th:action="@{/clientes/eliminar}" method="post" class="inline">
+                                <input type="hidden" name="id" th:value="${c.id}">
+                                <button type="submit" class="btn danger">Eliminar</button>
+                            </form>
+                            <form th:action="@{/llamadas/encolar}" method="post" class="inline">
+                                <input type="hidden" name="idCliente" th:value="${c.id}">
+                                <button type="submit" class="btn secondary">Encolar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Cola de Llamadas (FIFO)</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr><th>Orden</th><th>ID</th><th>Nombre</th><th>Prioridad</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(estado.cola)}">
+                        <td colspan="4" class="muted">Cola vacía</td>
+                    </tr>
+                    <tr th:each="c, i : ${estado.cola}">
+                        <td th:text="${i.index + 1}">1</td>
+                        <td th:text="${c.id}">1</td>
+                        <td th:text="${c.nombre}">Nombre</td>
+                        <td th:text="${c.prioridad}">1</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <form th:action="@{/llamadas/atender}" method="post">
+                <button type="submit" class="btn">Atender siguiente</button>
+            </form>
+            <div th:if="${atendido != null}" class="notice success" style="margin-top: 12px;">
+                Atendido: <strong th:text="${atendido.nombre}">Cliente</strong> (ID <span th:text="${atendido.id}">0</span>)
+            </div>
+        </div>
+    </section>
+
+    <section class="grid-2">
+        <div class="card">
+            <h2>Historial (Pila - LIFO)</h2>
+            <ol class="list">
+                <li th:if="${#lists.isEmpty(estado.pila)}" class="muted">Sin historial</li>
+                <li th:each="c : ${estado.pila}">
+                    <span th:text="${c.id}">0</span> -
+                    <span th:text="${c.nombre}">Cliente</span>
+                    (P: <span th:text="${c.prioridad}">1</span>)
+                </li>
+            </ol>
+        </div>
+
+        <div class="card">
+            <h2>Por Prioridad (Árbol Binario)</h2>
+            <ol class="list">
+                <li th:if="${#lists.isEmpty(estado.prioridad)}" class="muted">Sin datos</li>
+                <li th:each="c : ${estado.prioridad}">
+                    <span th:text="${c.id}">0</span> -
+                    <span th:text="${c.nombre}">Cliente</span>
+                    (P: <span th:text="${c.prioridad}">1</span>)
+                </li>
+            </ol>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <small>Proyecto: Simulador de Atención al Cliente — Estructuras: Lista, Cola, Pila, Árbol Binario.</small>
+</footer>
+</body>
+</html>
