@@ -27,6 +27,8 @@ public class ColaLlamadas {
     public Cliente desencolar() {
         if (contador > 0) {
             Cliente c = cola[inicio];
+            // limpia la ranura para evitar referencias obsoletas
+            cola[inicio] = null;
             inicio = (inicio + 1) % cola.length;
             contador--;
             return c;
@@ -34,9 +36,14 @@ public class ColaLlamadas {
         return null;
     }
 
-    // Devuelve el contenido de la cola
+    // Devuelve una copia ordenada (FIFO) con exactamente 'contador' elementos
     public Cliente[] mostrar() {
-        return cola;
+        Cliente[] resultado = new Cliente[contador];
+        for (int i = 0; i < contador; i++) {
+            int idx = (inicio + i) % cola.length;
+            resultado[i] = cola[idx];
+        }
+        return resultado;
     }
 
     // Retorna cantidad de elementos almacenados

@@ -39,14 +39,16 @@ public class SimuladorService {
      * Elimina cliente por id.
      */
     public boolean eliminarCliente(int id) {
-        return listaClientes.eliminar(id);
+        int antes = listaClientes.getSize();
+        listaClientes.eliminar(id);
+        return listaClientes.getSize() < antes;
     }
 
     /**
      * Busca un cliente por id en el almacenamiento general.
      */
     public Cliente buscarCliente(int id) {
-        return listaClientes.buscar(id);
+        return listaClientes.buscarPorId(id);
     }
 
     /**
@@ -79,9 +81,10 @@ public class SimuladorService {
     public Cliente[] obtenerClientesOrdenadosPorPrioridad() {
         ArbolBinarioPrioridad arbol = new ArbolBinarioPrioridad();
         Cliente[] todos = listaClientes.mostrar();
-        int n = listaClientes.getContador();
-        for (int i = 0; i < n; i++) {
-            arbol.insertar(todos[i]);
+        for (Cliente cli : todos) {
+            if (cli != null) {
+                arbol.insertar(cli);
+            }
         }
         return arbol.obtenerClientesEnOrden();
     }
@@ -92,7 +95,7 @@ public class SimuladorService {
     public EstadoSimulador obtenerEstado() {
         EstadoSimulador e = new EstadoSimulador();
         // Lista de clientes
-        int totalClientes = listaClientes.getContador();
+        int totalClientes = listaClientes.getSize();
         e.clientes = copiarHasta(listaClientes.mostrar(), totalClientes);
 
         // Cola de llamadas (arreglo circular expuesto como arreglo con contador)
@@ -124,7 +127,7 @@ public class SimuladorService {
      */
     @PostConstruct
     public void seedDemo() {
-        if (listaClientes.getContador() == 0) {
+        if (listaClientes.getSize() == 0) {
             agregarCliente(1, "Ana López", "555-1111", 2);
             agregarCliente(2, "Juan Pérez", "555-2222", 1);
             agregarCliente(3, "María Ruiz", "555-3333", 3);
