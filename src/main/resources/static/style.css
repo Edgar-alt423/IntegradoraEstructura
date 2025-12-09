@@ -1,25 +1,134 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* General Body Styles */
 body {
-    font-family: Arial;
-    margin: 20px;
-    background: #f0f0f0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Main Container */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
 }
 
 h1, h2 {
+    color: #2c3e50;
     text-align: center;
+    margin-bottom: 20px;
 }
 
-form input, button {
-    padding: 8px;
-    margin: 5px;
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 40px;
 }
 
+/* Section & Card Styling */
+section {
+    background-color: #ffffff;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s ease;
+}
+
+section:hover {
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+input[type="text"],
+input[type="number"] {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1em;
+    flex: 1;
+    min-width: 180px;
+}
+
+/* Button Styling */
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1em;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* Specific button for the 'atender' form */
+form[th\:action="@{/atender}"] button {
+    background-color: #2ecc71;
+    width: 100%;
+    margin-top: 10px;
+}
+
+form[th\:action="@{/atender}"] button:hover {
+    background-color: #27ae60;
+}
+
+/* Table Styling */
 table {
-    width: 80%;
-    margin: auto;
+    width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
+}
+
+thead {
+    background-color: #ecf0f1;
 }
 
 th, td {
-    padding: 10px;
-    border: 1px solid black;
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    font-weight: 600;
+    color: #34495e;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Message for empty tables */
+td[colspan="3"],
+td[colspan="4"] {
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+    padding: 20px;
 }

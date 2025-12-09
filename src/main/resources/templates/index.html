@@ -2,91 +2,111 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
     <title>Simulador de Atención</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-<h1>Simulador de Atención a Clientes</h1>
+<div class="container">
+    <h1>Simulador de Atención a Clientes</h1>
 
-<section>
-    <h2>Registrar llamada</h2>
-    <form th:action="@{/registrar}" method="post">
-        <input type="text" name="nombre" placeholder="Nombre del cliente" required>
-        <input type="text" name="problema" placeholder="Tipo de problema" required>
-        <button type="submit">Registrar</button>
-    </form>
-</section>
+    <section>
+        <h2>Registrar llamada</h2>
+        <form th:action="@{/registrar}" method="post">
+            <input type="text" name="nombre" placeholder="Nombre del cliente" required>
+            <input type="text" name="problema" placeholder="Tipo de problema" required>
+            <input type="number" name="prioridad" placeholder="Prioridad (1-5)" min="1" max="5" required>
+            <button type="submit">Registrar</button>
+        </form>
+    </section>
 
-<hr>
+    <section>
+        <h2>Clientes por Prioridad (Árbol Binario)</h2>
+        <table>
+            <thead>
+            <tr><th>ID</th><th>Nombre</th><th>Problema</th><th>Prioridad</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${arbol}" th:if="${c != null}">
+                <td th:text="${c.id}">ID</td>
+                <td th:text="${c.nombre}">Nombre</td>
+                <td th:text="${c.problema}">Problema</td>
+                <td th:text="${c.prioridad}">Prioridad</td>
+            </tr>
+            <tr th:if="${#arrays.isEmpty(arbol)}">
+                <td colspan="4">No hay clientes clasificados por prioridad</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 
-<section>
-    <h2>Cola de Llamadas (FIFO)</h2>
-    <table>
-        <thead>
-        <tr><th>ID</th><th>Nombre</th><th>Problema</th></tr>
-        </thead>
-        <tbody>
-        <tr th:each="c : ${cola}" th:if="${c != null}">
-            <td th:text="${c.id}">ID</td>
-            <td th:text="${c.nombre}">Nombre</td>
-            <td th:text="${c.problema}">Problema</td>
-        </tr>
+    <section>
+        <h2>Cola de Llamadas (FIFO)</h2>
+        <table>
+            <thead>
+            <tr><th>ID</th><th>Nombre</th><th>Problema</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${cola}" th:if="${c != null}">
+                <td th:text="${c.id}">ID</td>
+                <td th:text="${c.nombre}">Nombre</td>
+                <td th:text="${c.problema}">Problema</td>
+            </tr>
 
-        <tr th:if="${contadorCola == 0}">
-            <td colspan="3">No hay llamadas en la cola</td>
-        </tr>
-        </tbody>
-    </table>
+            <tr th:if="${contadorCola == 0}">
+                <td colspan="3">No hay llamadas en la cola</td>
+            </tr>
+            </tbody>
+        </table>
 
-    <form th:action="@{/atender}" method="post">
-        <button>Atender siguiente</button>
-    </form>
-</section>
+        <form th:action="@{/atender}" method="post">
+            <button>Atender siguiente</button>
+        </form>
+    </section>
 
-<hr>
+    <section>
+        <h2>Historial (Pila LIFO)</h2>
+        <table>
+            <thead>
+            <tr><th>ID</th><th>Cliente</th><th>Problema</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${pila}" th:if="${c != null}">
+                <td th:text="${c.id}">ID</td>
+                <td th:text="${c.nombre}">Nombre</td>
+                <td th:text="${c.problema}">Problema</td>
+            </tr>
 
-<section>
-    <h2>Historial (Pila LIFO)</h2>
-    <table>
-        <thead>
-        <tr><th>ID</th><th>Cliente</th><th>Problema</th></tr>
-        </thead>
-        <tbody>
-        <tr th:each="c : ${pila}" th:if="${c != null}">
-            <td th:text="${c.id}">ID</td>
-            <td th:text="${c.nombre}">Nombre</td>
-            <td th:text="${c.problema}">Problema</td>
-        </tr>
+            <tr th:if="${topePila < 0}">
+                <td colspan="3">No hay historial</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 
-        <tr th:if="${topePila < 0}">
-            <td colspan="3">No hay historial</td>
-        </tr>
-        </tbody>
-    </table>
-</section>
+    <section>
+        <h2>Lista General</h2>
+        <table>
+            <thead>
+            <tr><th>ID</th><th>Cliente</th><th>Problema</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${lista}" th:if="${c != null}">
+                <td th:text="${c.id}">ID</td>
+                <td th:text="${c.nombre}">Nombre</td>
+                <td th:text="${c.problema}">Problema</td>
+            </tr>
 
-<hr>
-
-<section>
-    <h2>Lista General</h2>
-    <table>
-        <thead>
-        <tr><th>ID</th><th>Cliente</th><th>Problema</th></tr>
-        </thead>
-        <tbody>
-        <tr th:each="c : ${lista}" th:if="${c != null}">
-            <td th:text="${c.id}">ID</td>
-            <td th:text="${c.nombre}">Nombre</td>
-            <td th:text="${c.problema}">Problema</td>
-        </tr>
-
-        <tr th:if="${contadorLista == 0}">
-            <td colspan="3">La lista está vacía</td>
-        </tr>
-        </tbody>
-    </table>
-</section>
+            <tr th:if="${contadorLista == 0}">
+                <td colspan="3">La lista está vacía</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
 
 </body>
 </html>
