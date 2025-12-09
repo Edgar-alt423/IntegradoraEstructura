@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
+    <title>Simulador de Atención</title>
+</head>
+<body>
+
+<h1>Simulador de Atención a Clientes</h1>
+
+<section>
+    <h2>Registrar llamada</h2>
+    <form th:action="@{/registrar}" method="post">
+        <input type="text" name="nombre" placeholder="Nombre del cliente" required>
+        <input type="text" name="problema" placeholder="Tipo de problema" required>
+        <button type="submit">Registrar</button>
+    </form>
+</section>
+
+<hr>
+
+<section>
+    <h2>Cola de Llamadas (FIFO)</h2>
+    <table>
+        <thead>
+        <tr><th>ID</th><th>Nombre</th><th>Problema</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${cola}" th:if="${c != null}">
+            <td th:text="${c.id}">ID</td>
+            <td th:text="${c.nombre}">Nombre</td>
+            <td th:text="${c.problema}">Problema</td>
+        </tr>
+
+        <tr th:if="${contadorCola == 0}">
+            <td colspan="3">No hay llamadas en la cola</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form th:action="@{/atender}" method="post">
+        <button>Atender siguiente</button>
+    </form>
+</section>
+
+<hr>
+
+<section>
+    <h2>Historial (Pila LIFO)</h2>
+    <table>
+        <thead>
+        <tr><th>ID</th><th>Cliente</th><th>Problema</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${pila}" th:if="${c != null}">
+            <td th:text="${c.id}">ID</td>
+            <td th:text="${c.nombre}">Nombre</td>
+            <td th:text="${c.problema}">Problema</td>
+        </tr>
+
+        <tr th:if="${topePila < 0}">
+            <td colspan="3">No hay historial</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<section>
+    <h2>Lista General</h2>
+    <table>
+        <thead>
+        <tr><th>ID</th><th>Cliente</th><th>Problema</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${lista}" th:if="${c != null}">
+            <td th:text="${c.id}">ID</td>
+            <td th:text="${c.nombre}">Nombre</td>
+            <td th:text="${c.problema}">Problema</td>
+        </tr>
+
+        <tr th:if="${contadorLista == 0}">
+            <td colspan="3">La lista está vacía</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+</body>
+</html>
