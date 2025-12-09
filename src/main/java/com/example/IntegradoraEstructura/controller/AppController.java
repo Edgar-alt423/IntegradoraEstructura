@@ -1,14 +1,14 @@
 package com.example.IntegradoraEstructura.controller;
 
 import com.example.IntegradoraEstructura.model.Cliente;
-import com.example.IntegradoraEstructura.repository.ClienteRepository;
 import com.example.IntegradoraEstructura.datastructures.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Controlador principal de la aplicación web.
@@ -17,22 +17,23 @@ import java.util.List;
 @Controller
 public class AppController {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+    // Almacenamiento en memoria para la lista principal de clientes
+    private final List<Cliente> lista = new ArrayList<>();
+    private final AtomicInteger idSeq = new AtomicInteger(1);
 
     private ColaLlamadas cola = new ColaLlamadas();
     private PilaHistorial pila = new PilaHistorial();
     private ArbolBinarioPrioridad arbol = new ArbolBinarioPrioridad();
 
     /**
-     * Mapea la ruta raíz ("/"). Prepara los datos de todas las estructuras
+     * Mapea la ruta "/app". Prepara los datos de todas las estructuras
      * y los envía al modelo para que la vista 'index.html' los renderice.
      * @param model El modelo al que se añaden los atributos para la vista.
      * @return El nombre de la plantilla de la vista (index).
      */
-    @GetMapping("/")
+    @GetMapping("/app")
     public String index(Model model) {
-        List<Cliente> clientes = clienteRepository.findAll();
+        List<Cliente> clientes = lista;
         model.addAttribute("lista", clientes);
         model.addAttribute("cola", cola.mostrar());
         model.addAttribute("pila", pila.mostrar());
@@ -58,11 +59,12 @@ public class AppController {
                             @RequestParam int prioridad) {
 
         Cliente c = new Cliente(nombre, problema, prioridad);
-        clienteRepository.save(c);
+        c.setId(idSeq.getAndIncrement()); // Asigna ID incremental en memoria
+        lista.add(c);
         cola.encolar(c);
         arbol.insertar(c);
 
-        return "redirect:/";
+        return "redirect:/app";
     }
 
     /**
@@ -74,6 +76,6 @@ public class AppController {
     public String atender() {
         Cliente c = cola.desencolar();
         if (c != null) pila.push(c);
-        return "redirect:/";
+        return "redirect:/app";
     }
 }
